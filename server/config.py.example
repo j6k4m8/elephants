@@ -1,0 +1,5 @@
+# put the dynamo table prefix here (e.g. 'elephantapp')
+DYNAMODB_TABLE_PREFIX = ""
+
+# put the dynamo host here, if using one (e.g. 'localhost:8000')
+DYNAMODB_HOST = "http://localhost:8000"
