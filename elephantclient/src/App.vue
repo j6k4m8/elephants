@@ -7,7 +7,7 @@
       <input type="text" placeholder="Your name" @blur="setName">
       <button>Go</button>
       <div>
-        {{name}}
+        {{ name }}
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     let name = localStorage.getItem("name");
-    return {name,};
+    return { name, };
   },
   methods: {
     setName(ev) {
@@ -47,10 +47,10 @@ export default {
   box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   overscroll-behavior-y: none;
   overscroll-behavior-x: none;
 }
-
 </style>

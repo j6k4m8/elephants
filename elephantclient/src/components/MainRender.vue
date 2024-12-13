@@ -3,41 +3,26 @@
         <div @click="clickedScope" class="clicktarget"></div>
         <div class="scope"></div>
         <World />
-        <img
-            src="../assets/elephant_walk.gif"
-            v-bind:style="{
-                left: (this.currentX || this.targetX || 0) + 'px',
-                transform: 'scale(' + (this.flip == 'R' ? 1 : -1) + ', 1)',
-                visibility: this.walking ? 'visible' : 'hidden',
-                filter: 'hue-rotate(' + this.hue + 'deg)',
-                'z-index': 9999
-            }"
-            class="my-elephant"
-        />
-        <img
-            src="../assets/elephant_stand.png"
-            v-bind:style="{
-                left: (this.currentX || this.targetX || 0) + 'px',
-                transform: 'scale(' + (this.flip == 'R' ? 1 : -1) + ', 1)',
-                visibility: this.walking ? 'hidden' : 'visible',
-                filter: 'hue-rotate(' + this.hue + 'deg)',
-                'z-index': 9999
-            }"
-            class="my-elephant"
-        />
+        <img src="../assets/elephant_walk.gif" v-bind:style="{
+            left: (this.currentX || this.targetX || 0) + 'px',
+            transform: 'scale(' + (this.flip == 'R' ? 1 : -1) + ', 1)',
+            visibility: this.walking ? 'visible' : 'hidden',
+            filter: 'hue-rotate(' + this.hue + 'deg)',
+            'z-index': 9999
+        }" class="my-elephant" />
+        <img src="../assets/elephant_stand.png" v-bind:style="{
+            left: (this.currentX || this.targetX || 0) + 'px',
+            transform: 'scale(' + (this.flip == 'R' ? 1 : -1) + ', 1)',
+            visibility: this.walking ? 'hidden' : 'visible',
+            filter: 'hue-rotate(' + this.hue + 'deg)',
+            'z-index': 9999
+        }" class="my-elephant" />
 
         <EverybodyElse :ignore="this.id" />
 
         <div class="menu">
-            <input
-                type="range"
-                v-model="hue"
-                name="hue"
-                id="hueinput"
-                min="0"
-                max="360"
-                style="width: 50vw; margin: auto;"
-            />
+            <input type="range" v-model="hue" name="hue" id="hueinput" min="0" max="360"
+                style="width: 50vw; margin: auto;" />
             <br />
             <button @click="geolocateMe">Locate Me!</button>
         </div>
