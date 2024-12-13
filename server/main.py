@@ -35,9 +35,7 @@ class _DynamoElephant(Model):
         }
 
 
-class ElephantManager:
-
-    ...
+class ElephantManager: ...
 
 
 class DynamoDBElephantManager(ElephantManager):
@@ -175,19 +173,19 @@ def heartbeat():
 
 @APP.route("/peers/<elephant_id>", methods=["GET"])
 def peers(elephant_id):
-    elephant_id = request.access_route[-1] + elephant_id
+    # elephant_id = request.access_route[-1] + elephant_id
     return jsonify(EM.peers(without=elephant_id))
 
 
 @APP.route("/peer/<elephant_id>", methods=["GET"])
 def peer_info(elephant_id: str):
-    elephant_id = request.access_route[-1] + elephant_id
+    # elephant_id = request.access_route[-1] + elephant_id
     return jsonify({"response": EM.get_info(elephant_id)})
 
 
 @APP.route("/report/<elephant_id>", methods=["POST"])
 def report(elephant_id: str):
-    elephant_id = request.access_route[-1] + elephant_id
+    # elephant_id = request.access_route[-1] + elephant_id
     return jsonify({"response": EM.register_elephant(elephant_id, request.json)})
 
 
