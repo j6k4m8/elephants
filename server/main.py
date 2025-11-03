@@ -1,6 +1,9 @@
 from typing import List
 import json
 import time
+import math
+import urllib.request
+import urllib.error
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -187,6 +190,33 @@ def peer_info(elephant_id: str):
 def report(elephant_id: str):
     # elephant_id = request.access_route[-1] + elephant_id
     return jsonify({"response": EM.register_elephant(elephant_id, request.json)})
+
+
+@APP.route("/fallback_location", methods=["GET"])
+def fallback_location():
+    forwarded_for = request.headers.get("X-Forwarded-For", "")
+    client_ip = forwarded_for.split(",")[0].strip() if forwarded_for else request.remote_addr
+
+    if client_ip in (None, "", "127.0.0.1", "::1"):
+        lookup_url = "https://ipapi.co/json/"
+    else:
+        lookup_url = f"https://ipapi.co/{client_ip}/json/"
+
+    try:
+        with urllib.request.urlopen(lookup_url, timeout=2) as response:
+            data = json.load(response)
+            longitude = data.get("longitude")
+            if longitude is not None:
+                try:
+                    lng_value = float(longitude)
+                    if math.isfinite(lng_value):
+                        return jsonify({"longitude": lng_value})
+                except (TypeError, ValueError):
+                    pass
+    except (urllib.error.URLError, TimeoutError, ValueError) as err:
+        print(f"IP-based fallback failed: {err}")
+
+    return jsonify({"longitude": 0})
 
 
 if __name__ == "__main__":

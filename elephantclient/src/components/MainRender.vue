@@ -100,14 +100,41 @@ export default {
                 });
         },
 
+        async fallbackToIp() {
+            try {
+                const response = await fetch(`${BASE_URL}/fallback_location`);
+                if (!response.ok) {
+                    throw new Error(`IP lookup failed with status ${response.status}`);
+                }
+                const data = await response.json();
+                const longitude = parseFloat(data.longitude);
+                if (Number.isFinite(longitude)) {
+                    return { coords: { longitude } };
+                }
+            } catch (err) {
+                console.warn("Unable to determine location from IP", err);
+            }
+            return { coords: { longitude: 0 } };
+        },
+
         geolocateMe() {
+            const applyPosition = position => {
+                const lng = position && position.coords ? position.coords.longitude : 0;
+                this.currentX = lngToPix(lng);
+                this.targetX = lngToPix(lng);
+            };
+
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    this.currentX = lngToPix(position.coords.longitude);
-                    this.targetX = lngToPix(position.coords.longitude);
-                });
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        applyPosition(position);
+                    },
+                    () => {
+                        this.fallbackToIp().then(applyPosition);
+                    }
+                );
             } else {
-                return;
+                this.fallbackToIp().then(applyPosition);
             }
         }
     },
@@ -217,9 +244,14 @@ export default {
         };
         renderAll = renderAll.bind(this);
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(renderAll);
+            navigator.geolocation.getCurrentPosition(
+                renderAll,
+                () => {
+                    this.fallbackToIp().then(renderAll);
+                }
+            );
         } else {
-            renderAll({ coords: { longitude: 0 } });
+            this.fallbackToIp().then(renderAll);
         }
     }
 };
